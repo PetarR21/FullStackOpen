@@ -6,32 +6,50 @@ const Statistics = ({ good, neutral, bad }) => {
   };
 
   const average = (good, neutral, bad) => {
-    if (sum(good, neutral, bad) === 0) {
-      return 0;
-    }
-
     return sum(good, neutral * 0, bad * -1) / sum(good, neutral, bad);
   };
 
   const positive = (good, neutral, bad) => {
-    if (sum(good, neutral, bad) === 0) {
-      return 0;
-    }
-
     return (good / sum(good, neutral, bad)) * 100;
   };
 
+  if (sum(good, neutral, bad) == 0) {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <p>No feedback given</p>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <h1>statistics</h1>
+        <table>
+          <tbody>
+            <StatisticLine text='good' value={good} />
+            <StatisticLine text='neutral' value={neutral} />
+            <StatisticLine text='bad' value={bad} />
+            <StatisticLine text='all' value={sum(good, neutral, bad)} />
+            <StatisticLine text='average' value={average(good, neutral, bad).toFixed(1)} />
+            <StatisticLine text='positive' value={positive(good, neutral, bad).toFixed(1) + ' %'} />
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+};
+
+const StatisticLine = ({ text, value }) => {
   return (
-    <div>
-      <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {sum(good, neutral, bad)}</p>
-      <p>average {average(good, neutral, bad)}</p>
-      <p>positive {positive(good, neutral, bad)} %</p>
-    </div>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   );
+};
+
+const Button = ({ text, onClick }) => {
+  return <button onClick={onClick}>{text}</button>;
 };
 
 const App = () => {
@@ -43,9 +61,9 @@ const App = () => {
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={() => setGood(good + 1)}>good</button>
-      <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-      <button onClick={() => setBad(bad + 1)}>bad</button>
+      <Button text='good' onClick={() => setGood(good + 1)} />
+      <Button text='neutral' onClick={() => setNeutral(neutral + 1)} />
+      <Button text='bad' onClick={() => setBad(bad + 1)} />
 
       <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
