@@ -9,6 +9,8 @@ morgan.token("body", (req, res) => {
   return null;
 });
 
+app.use(express.static("dist"));
+
 app.use(express.json());
 app.use(
   morgan(function (tokens, req, res) {
@@ -47,10 +49,6 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
-
-app.get("/", (request, response) => {
-  response.send("<h1>Phonebook app</h1?");
-});
 
 app.get("/info", (request, response) => {
   response.send(
@@ -92,7 +90,7 @@ app.delete("/api/persons/:id", (request, response) => {
   const person = persons.find((p) => p.id === request.params.id);
 
   if (person) {
-    persons = persons.filter((p) => p.id === person.id);
+    persons = persons.filter((p) => p.id !== person.id);
     response.sendStatus(204);
   } else {
     response.sendStatus(404);
@@ -120,7 +118,7 @@ app.post("/api/persons", (request, response) => {
   response.json(person);
 });
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
