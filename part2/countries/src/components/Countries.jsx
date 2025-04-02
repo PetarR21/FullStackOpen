@@ -1,18 +1,14 @@
+import Country from './Country';
+
 const Countries = ({ countries, filter }) => {
-  if (!countries) {
+  if (!countries || !filter) {
     return;
   }
 
   const filteredCountries = countries.filter(
     (country) =>
-      country.name.common
-        .trim()
-        .toLowerCase()
-        .includes(filter.trim().toLowerCase()) ||
-      country.name.official
-        .trim()
-        .toLowerCase()
-        .includes(filter.trim().toLowerCase())
+      country.name.common.trim().toLowerCase().includes(filter.trim().toLowerCase()) ||
+      country.name.official.trim().toLowerCase().includes(filter.trim().toLowerCase())
   );
 
   if (filteredCountries.length === 0) {
@@ -23,16 +19,19 @@ const Countries = ({ countries, filter }) => {
     return <p>Too many matches, specify another filter.</p>;
   }
 
-  console.log(filteredCountries);
-
   if (filteredCountries.length <= 10 && filteredCountries.length > 1) {
     return (
       <div>
         {filteredCountries.map((c) => (
-          <div key={c.name.common}>{c.name.common}</div>
+          <Country key={c.name.common} country={c} show={false} />
         ))}
       </div>
     );
+  }
+
+  if (filteredCountries.length === 1) {
+    const country = filteredCountries[0];
+    return <Country key={country.name.common} country={country} show={true} />;
   }
 };
 
