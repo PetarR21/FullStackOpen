@@ -13,10 +13,14 @@ const Country = ({ country, show }) => {
       const capital = country.capital;
       console.log(capital);
       axios
-        .get(`https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}`)
+        .get(
+          `https://api.openweathermap.org/data/2.5/weather?q=${capital}&appid=${api_key}&units=metric`
+        )
         .then((response) => {
-          console.log(response.data.weather);
-        });
+          setWeather(response.data);
+          console.log(response.data);
+        })
+        .catch((error) => console.log(error.message));
     }
   }, []);
 
@@ -44,7 +48,12 @@ const Country = ({ country, show }) => {
         {weather ? (
           <div>
             {' '}
-            <p>hello</p>{' '}
+            <p>Temperature {weather.main.temp} Celsius</p>{' '}
+            <img
+              alt='icon'
+              src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+            />
+            <p>Wind {weather.wind.speed} m/s</p>
           </div>
         ) : (
           ''
