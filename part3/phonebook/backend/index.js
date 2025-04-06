@@ -53,21 +53,28 @@ app.get("/api/persons", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response) => {
-  Person.findById(request.params.id).then((person) => {
-    response.json(person);
-  });
+app.get("/api/persons/:id", (request, response, next) => {
+  Person.findById(request.params.id)
+    .then((person) => {
+      if (person) {
+        response.json(person);
+      } else {
+        response.sendStatus(404);
+      }
+    })
+    .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (request, response) => {
-  const person = persons.find((p) => p.id === request.params.id);
-
-  if (person) {
-    persons = persons.filter((p) => p.id !== person.id);
-    response.sendStatus(204);
-  } else {
-    response.sendStatus(404);
-  }
+app.delete("/api/persons/:id", (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then((deletedPerson) => {
+      if (deletedPerson) {
+        response.sendStatus(204);
+      } else {
+        response.sendStatus(404);
+      }
+    })
+    .catch((error) => next(error));
 });
 
 app.post("/api/persons", (request, response) => {
@@ -86,6 +93,36 @@ app.post("/api/persons", (request, response) => {
     response.json(savedPerson);
   });
 });
+
+app.put("/api/persons/:id", (request, response, next) => {
+  Person.findByIdAndUpdate(request.params.id, request.body, { new: true })
+    .then((updatedObject) => {
+      if (updatedObject) {
+        response.json(updatedObject);
+      } else {
+        response.sendStatus(404);
+      }
+    })
+    .catch((error) => next(error));
+});
+
+const unkownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unkownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
