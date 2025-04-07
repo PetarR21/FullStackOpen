@@ -67,9 +67,8 @@ const App = () => {
           });
         })
         .catch((error) => {
-          console.error(error.message);
           showNotification({
-            message: `Information of ${person.name} has already been removed from server.`,
+            message: error.response.data.error,
             type: "error",
           });
         });
@@ -79,15 +78,24 @@ const App = () => {
         number: newNumber,
       };
 
-      personService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson));
-        setNewName("");
-        setNewNumber("");
-        showNotification({
-          message: `Added ${returnedPerson.name}`,
-          type: "success",
+      personService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName("");
+          setNewNumber("");
+          showNotification({
+            message: `Added ${returnedPerson.name}`,
+            type: "success",
+          });
+        })
+        .catch((error) => {
+          console.log(error.response.data.error);
+          showNotification({
+            message: error.response.data.error,
+            type: "error",
+          });
         });
-      });
     }
   };
 
