@@ -20,7 +20,7 @@ test('blogs are returned as json', async () => {
   await api
     .get('/api/blogs')
     .expect(200)
-    .expect('Content/Type', /application\/json/)
+    .expect('Content-Type', /application\/json/)
 })
 
 after(async () => {
