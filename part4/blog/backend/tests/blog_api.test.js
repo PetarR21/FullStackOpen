@@ -23,6 +23,20 @@ test('blogs are returned as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
+test('returns correct number of blogs', async () => {
+  const response = await api.get('/api/blogs')
+
+  assert.strictEqual(response.body.length, helper.initialBlogs.length)
+})
+
+test('a specific blog is within returned blogs', async () => {
+  const response = await api.get('/api/blogs')
+
+  const titles = response.body.map((b) => b.title)
+
+  assert(titles.includes(helper.initialBlogs[0].title))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
