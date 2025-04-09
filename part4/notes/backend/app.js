@@ -1,11 +1,10 @@
-const express = require('express')
-const mongoose = require('mongoose')
 const config = require('./utils/config')
-const logger = require('./utils/logger')
+const express = require('express')
+const app = express()
 const notesRouter = require('./controllers/notes')
 const middleware = require('./utils/middleware')
-
-const app = express()
+const logger = require('./utils/logger')
+const mongoose = require('mongoose')
 
 logger.info('connecting to', config.MONGODB_URI)
 

@@ -9,7 +9,12 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
     "dev": "cross-env NODE_ENV=development node --watch index.js",
+<<<<<<< HEAD
     "test": "cross-env NODE_ENV=test node --test",
+=======
+    "test": "cross-env  NODE_ENV=test node --test",
+    "test:api": "npm test -- tests/note_api.test.js",
+>>>>>>> 7fb077a35bcafd3fcd3f185fdcd53db84bbb4fdd
     "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push",
     "lint": "eslint .",
@@ -20,6 +25,7 @@
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
+    "express-async-errors": "^3.1.1",
     "mongoose": "^8.13.1"
   },
   "devDependencies": {
