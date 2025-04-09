@@ -106,7 +106,11 @@ describe('when there are some blogs saved initialy', () => {
       })
 
       assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
-      assert(blogObjects.find((blog) => JSON.stringify(blog) === JSON.stringify(newBlogObject)))
+      assert(
+        blogObjects.find(
+          (blog) => JSON.stringify(blog) === JSON.stringify(newBlogObject)
+        )
+      )
     })
 
     test('if the likes property is missing from the request, it will default to the value 0', async () => {
@@ -124,7 +128,9 @@ describe('when there are some blogs saved initialy', () => {
 
       const response = await api.get('/api/blogs')
 
-      const blogToFind = response.body.find((blog) => blog.title === newBlogObject.title)
+      const blogToFind = response.body.find(
+        (blog) => blog.title === newBlogObject.title
+      )
 
       assert(blogToFind.likes === 0)
     })
@@ -153,6 +159,40 @@ describe('when there are some blogs saved initialy', () => {
       const response = await api.get('/api/blogs')
 
       assert.strictEqual(response.body.length, helper.initialBlogs.length)
+    })
+  })
+
+  describe('deletion of a blog', () => {
+    test('succeeds with status 204 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+
+      const titles = blogsAtEnd.map((b) => b.title)
+      assert(!titles.includes(blogToDelete.title))
+    })
+
+    test('fails with status 404 if blog does not exist', async () => {
+      const validNonExistingId = await helper.nonExistingId()
+
+      await api.delete(`/api/blogs/${validNonExistingId}`).expect(404)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('fails with status 400 if id is invalid', async () => {
+      const invalidId = '000'
+
+      await api.delete(`/api/blogs/${invalidId}`).expect(400)
+
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
 })

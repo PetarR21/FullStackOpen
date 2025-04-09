@@ -11,7 +11,7 @@ logger.info('connecting to', config.MONGODB_URI)
 
 mongoose
   .connect(config.MONGODB_URI, {
-    serverSelectionTimeoutMS: 30000,
+    serverSelectionTimeoutMS: 40000,
   })
   .then(() => {
     logger.info('connected to MongoDB')
