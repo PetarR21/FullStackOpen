@@ -195,6 +195,36 @@ describe('when there are some blogs saved initialy', () => {
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
+
+  describe('updating likes of a blog', () => {
+    test('succeeds with status 200 if id is valid', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToUpdate = blogsAtStart[0]
+
+      const updatedBlog = await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send({ likes: blogToUpdate.likes + 1 })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      assert(updatedBlog.body.likes, blogToUpdate.likes + 1)
+    })
+
+    test('fails with status 404 if blog does not exist', async () => {
+      const validNonExistingId = await helper.nonExistingId()
+
+      await api
+        .put(`/api/blogs/${validNonExistingId}`)
+        .send({ likes: 0 })
+        .expect(404)
+    })
+
+    test('fails with status 400 if id is invalid', async () => {
+      const invalidId = '000'
+
+      await api.put(`/api/blogs/${invalidId}`).send({ likes: 10 }).expect(400)
+    })
+  })
 })
 
 after(async () => {
