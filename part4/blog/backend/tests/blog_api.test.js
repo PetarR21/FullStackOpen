@@ -10,18 +10,28 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const User = require('../models/user')
 
-beforeEach(async () => {
-  await Blog.deleteMany({})
-
-  const blogObjects = helper.initialBlogs.map((blog) => new Blog(blog))
-  const promiseArray = blogObjects.map((blog) => blog.save())
-  await Promise.all(promiseArray)
-})
-
 describe('when there are some blogs saved initialy', () => {
+  let token = null
+
   beforeEach(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcryptjs.hash('secret', 10)
+    const user = new User({ username: 'root', passwordHash })
+
+    const savedUser = await user.save()
+    const result = await api
+      .post('/api/login')
+      .send({ username: 'root', password: 'secret' })
+
+    token = result.body.token
+
+    const blogsWithUser = helper.initialBlogs.map((b) => {
+      return { ...b, user: savedUser._id }
+    })
+
     await Blog.deleteMany({})
-    await Blog.insertMany(helper.initialBlogs)
+    await Blog.insertMany(blogsWithUser)
   })
 
   test('blogs are returned as json', async () => {
@@ -65,7 +75,7 @@ describe('when there are some blogs saved initialy', () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
-      assert.deepStrictEqual(resultBlog.body, blogToView)
+      assert.deepStrictEqual(resultBlog.body.title, blogToView.title)
     })
 
     test('fails with status 404 if blog does not exist', async () => {
@@ -92,6 +102,7 @@ describe('when there are some blogs saved initialy', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlogObject)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -124,6 +135,7 @@ describe('when there are some blogs saved initialy', () => {
 
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
         .send(newBlogObject)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -143,7 +155,11 @@ describe('when there are some blogs saved initialy', () => {
         url: 'TestUrl',
       }
 
-      await api.post('/api/blogs').send(newBlogObject).expect(400)
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlogObject)
+        .expect(400)
 
       const response = await api.get('/api/blogs')
 
@@ -156,7 +172,25 @@ describe('when there are some blogs saved initialy', () => {
         url: 'TestUrl',
       }
 
-      await api.post('/api/blogs').send(newBlogObject).expect(400)
+      await api
+        .post('/api/blogs')
+        .set('Authorization', `Bearer ${token}`)
+        .send(newBlogObject)
+        .expect(400)
+
+      const response = await api.get('/api/blogs')
+
+      assert.strictEqual(response.body.length, helper.initialBlogs.length)
+    })
+
+    test('if the token is missing from the request responds with status 401', async () => {
+      const newBlogObject = {
+        title: 'TestTitle',
+        author: 'TestAuhtor',
+        url: 'TestUrl',
+      }
+
+      await api.post('/api/blogs').send(newBlogObject).expect(401)
 
       const response = await api.get('/api/blogs')
 
@@ -169,7 +203,10 @@ describe('when there are some blogs saved initialy', () => {
       const blogsAtStart = await helper.blogsInDb()
       const blogToDelete = blogsAtStart[0]
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
 
@@ -182,7 +219,10 @@ describe('when there are some blogs saved initialy', () => {
     test('fails with status 404 if blog does not exist', async () => {
       const validNonExistingId = await helper.nonExistingId()
 
-      await api.delete(`/api/blogs/${validNonExistingId}`).expect(404)
+      await api
+        .delete(`/api/blogs/${validNonExistingId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(404)
 
       const blogsAtEnd = await helper.blogsInDb()
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
@@ -191,9 +231,23 @@ describe('when there are some blogs saved initialy', () => {
     test('fails with status 400 if id is invalid', async () => {
       const invalidId = '000'
 
-      await api.delete(`/api/blogs/${invalidId}`).expect(400)
+      await api
+        .delete(`/api/blogs/${invalidId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(400)
 
       const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('if the token is missing from the request responds with status 401', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(401)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
       assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
