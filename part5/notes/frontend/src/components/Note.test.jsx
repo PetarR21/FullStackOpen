@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { render, screen } from '@testing-library/react'
 import Note from './Note'
 
@@ -9,6 +10,8 @@ test('renders component', () => {
 
   render(<Note note={note} />)
 
-  const element = screen.getByText('Component testing is done with react-testing-library')
+  const element = screen.getByText(
+    'Component testing is done with react-testing-library'
+  )
   expect(element).toBeDefined()
 })
