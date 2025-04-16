@@ -33,9 +33,14 @@ blogsRouter.post(
     })
 
     const savedBlog = await blog.save()
+
+    await savedBlog.populate('user', {
+      username: 1,
+      name: 1,
+    })
+
     user.blogs = user.blogs.concat(savedBlog._id)
     await user.save()
-
     response.status(201).json(savedBlog)
   }
 )
@@ -54,10 +59,13 @@ blogsRouter.delete(
     }
 
     if (user._id.toString() !== blogToDelete.user.toString()) {
-      return response.status(401).json({ error: 'unauthorized operation' })
+      return response
+        .status(401)
+        .json({ error: 'Unauthorized delete operation' })
     }
 
-    await blogToDelete.deleteOne()
+    const deletedBlog = await blogToDelete.deleteOne()
+    console.log(deletedBlog)
     response.status(204).end()
   }
 )
@@ -72,6 +80,10 @@ blogsRouter.put('/:id', async (request, response) => {
   })
 
   if (updatedBlog) {
+    await updatedBlog.populate('user', {
+      username: 1,
+      name: 1,
+    })
     response.json(updatedBlog)
   } else {
     response.status(404).end()
