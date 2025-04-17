@@ -26,15 +26,13 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
   const removeBlog = (event) => {
     event.preventDefault()
 
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`))
-      deleteBlog(blog)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) deleteBlog(blog)
   }
 
   return (
-    <div style={blogStyle}>
+    <div className='blog' style={blogStyle}>
       <div>
-        {blog.title} {blog.author}{' '}
-        <button onClick={toggleView}>{view ? 'hide' : 'view'}</button>
+        {blog.title} {blog.author} <button onClick={toggleView}>{view ? 'hide' : 'view'}</button>
       </div>
       <div style={showWhenVisible}>
         <p>{blog.url}</p>
