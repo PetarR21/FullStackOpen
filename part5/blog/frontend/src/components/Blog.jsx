@@ -30,6 +30,10 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
       deleteBlog(blog)
   }
 
+  const removeButtonVisible =
+    JSON.parse(localStorage.getItem('loggedBlogAppUser')).username ===
+    blog.user.username
+
   return (
     <div className='blog' style={blogStyle}>
       <div className='visibleByDefault'>
@@ -41,15 +45,18 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
       <div className='hiddenByDefault' style={showWhenVisible}>
         <p>{blog.url}</p>
         <p>
-          likes {blog.likes}{' '}
+          <span>likes {blog.likes}</span>
           <button className='likeButton' onClick={likeBlog}>
             like
           </button>
         </p>
         <p>{blog.user.name}</p>
-        <div>
-          <button onClick={removeBlog}>remove</button>
-        </div>
+
+        {removeButtonVisible ? (
+          <button className='removeButton' onClick={removeBlog}>
+            remove
+          </button>
+        ) : null}
       </div>
     </div>
   )
