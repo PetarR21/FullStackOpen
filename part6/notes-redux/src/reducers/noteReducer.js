@@ -1,11 +1,22 @@
 import { createStore } from 'redux'
 
 const noteReducer = (state = [], action) => {
-  if (action.type === 'NEW_NOTE') {
-    return state.concat(action.payload)
-  }
+  switch (action.type) {
+    case 'NEW_NOTE':
+      return [...state, action.payload]
+    case 'TOGGLE_IMPORTANCE': {
+      const id = action.payload.id
+      const noteToChange = state.find((n) => n.id === id)
+      const changedNote = {
+        ...noteToChange,
+        important: !noteToChange.important,
+      }
 
-  return state
+      return state.map((note) => (note.id !== id ? note : changedNote))
+    }
+    default:
+      return state
+  }
 }
 
 const store = createStore(noteReducer)
@@ -41,4 +52,5 @@ const App = () => {
     </div>
   )
 }
+
 export default noteReducer
