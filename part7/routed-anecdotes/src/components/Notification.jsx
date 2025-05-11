@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const Notification = ({ notification }) => {
   if (!notification) {
     return null

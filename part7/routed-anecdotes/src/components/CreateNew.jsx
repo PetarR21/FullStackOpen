@@ -1,24 +1,32 @@
 /* eslint-disable react/prop-types */
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useFiled } from '../hooks'
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  const content = useFiled('text')
+  const author = useFiled('text')
+  const info = useFiled('text')
 
   const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.field.value,
+      author: author.field.value,
+      info: info.field.value,
       votes: 0,
     })
     navigate('/')
-    props.showNotification(`a new anecdote ${content} created`)
+    props.showNotification(`a new anecdote ${content.value} created`)
+  }
+
+  const resetFields = (event) => {
+    event.preventDefault()
+
+    content.reset()
+    author.reset()
+    info.reset()
   }
 
   return (
@@ -27,29 +35,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name='content'
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content.field} />
         </div>
         <div>
           author
-          <input
-            name='author'
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author.field} />
         </div>
         <div>
           url for more info
-          <input
-            name='info'
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info.field} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button onClick={resetFields}>reset</button>
       </form>
     </div>
   )
