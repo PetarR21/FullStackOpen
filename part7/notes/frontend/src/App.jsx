@@ -9,6 +9,8 @@ import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import NoteForm from './components/NoteForm'
 
+import { Table } from 'react-bootstrap'
+
 const App = () => {
   const [notes, setNotes] = useState(null)
   const [showAll, setShowAll] = useState(true)
@@ -109,7 +111,7 @@ const App = () => {
   )
 
   return (
-    <div>
+    <div className='container'>
       <h1>Notes</h1>
 
       <Notification message={errorMessage} />
@@ -128,15 +130,20 @@ const App = () => {
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-        {notesToShow.map((note) => (
-          <Note
-            key={note.id}
-            note={note}
-            toggleImportance={() => toggleImportanceOf(note.id)}
-          />
-        ))}
-      </ul>
+      <Table striped>
+        <tbody>
+          {notesToShow.map((note) => (
+            <tr key={note.id}>
+              <td>
+                <Note
+                  note={note}
+                  toggleImportance={() => toggleImportanceOf(note.id)}
+                />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
       <Footer />
     </div>
   )
