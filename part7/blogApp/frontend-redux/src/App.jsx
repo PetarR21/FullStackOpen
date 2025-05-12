@@ -6,11 +6,11 @@ import loginService from './services/login'
 import Togglable from './components/Togglable'
 import NewBlogForm from './components/NewBlogForm'
 import LoginForm from './components/LoginForm'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
+import { initializeBlogs } from './reducers/blogsReducer'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
@@ -18,8 +18,12 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(initializeBlogs())
   }, [])
+
+  const blogs = useSelector(({ notification, blogs }) => {
+    return [...blogs].sort((blog1, blog2) => blog2.likes - blog1.likes)
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -58,30 +62,6 @@ const App = () => {
     blogService.setToken(null)
     setUser(null)
     setNotification(null)
-  }
-
-  const addNewBlog = async (blogObject) => {
-    try {
-      const newBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat(newBlog))
-      blogFormRef.current.toggleVisibility()
-      dispatch(
-        setNotification(
-          {
-            message: `a new Blog ${newBlog.title} by ${newBlog.author} added`,
-            type: 'success',
-          },
-          4000
-        )
-      )
-    } catch (error) {
-      dispatch(
-        setNotification(
-          { message: error.response.data.error, type: 'error' },
-          4000
-        )
-      )
-    }
   }
 
   const updateBlogLikes = async (updatedLikes, id) => {
@@ -135,7 +115,7 @@ const App = () => {
   const newBlogForm = () => {
     return (
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
-        <NewBlogForm createBlog={addNewBlog} />
+        <NewBlogForm blogFormRef={blogFormRef} />
       </Togglable>
     )
   }
@@ -143,8 +123,6 @@ const App = () => {
   if (user === null) {
     return <LoginForm login={handleLogin} />
   }
-
-  const sortedBlogs = blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
 
   return (
     <div>
@@ -154,7 +132,7 @@ const App = () => {
         {user.name} logged in <button onClick={handleLogout}>logout</button>
       </p>
       {newBlogForm()}
-      {sortedBlogs.map((blog) => (
+      {blogs.map((blog) => (
         <Blog
           key={blog.id}
           blog={blog}
