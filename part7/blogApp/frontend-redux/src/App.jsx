@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { initializeUser, logoutUser } from './reducers/userReducer'
+import { Route, Routes } from 'react-router-dom'
+import Users from './components/Users'
 
 const App = () => {
   const user = useSelector((state) => state.user)
@@ -49,13 +51,22 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <Notification />
-      <p>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </p>
-      {newBlogForm()}
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <p>{user.name} logged in</p>
+      <button onClick={handleLogout}>logout</button>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <>
+              {newBlogForm()}{' '}
+              {blogs.map((blog) => (
+                <Blog key={blog.id} blog={blog} />
+              ))}
+            </>
+          }
+        />
+        <Route path='/users' element={<Users />} />
+      </Routes>
     </div>
   )
 }
