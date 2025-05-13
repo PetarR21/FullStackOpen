@@ -1,75 +1,49 @@
-import { useState } from 'react'
 import { updateBlogLikes } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { deleteBlog } from '../reducers/blogsReducer'
+import { useNavigate } from 'react-router-dom'
 
 const Blog = ({ blog }) => {
-  const [view, setView] = useState(false)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
-
-  const showWhenVisible = { display: view ? '' : 'none' }
-
-  const toggleView = () => {
-    setView(!view)
+  if (!blog) {
+    return null
   }
 
   const likeBlog = (event) => {
     event.preventDefault()
 
-    try {
-      dispatch(updateBlogLikes({ ...blog, likes: blog.likes + 1 }))
-      dispatch(
-        setNotification(
-          {
-            message: `Liked ${blog.title} blog`,
-            type: 'success',
-          },
-          4000
-        )
+    dispatch(updateBlogLikes({ ...blog, likes: blog.likes + 1 }))
+    dispatch(
+      setNotification(
+        {
+          message: `Liked ${blog.title} blog`,
+          type: 'success',
+        },
+        4000
       )
-    } catch (error) {
-      dispatch(
-        setNotification(
-          { message: error.response.data.error, type: 'error' },
-          4000
-        )
-      )
-    }
+    )
   }
 
   const removeBlog = (event) => {
     event.preventDefault()
 
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
-      try {
-        dispatch(deleteBlog(blog.id))
+      dispatch(deleteBlog(blog.id))
 
-        dispatch(
-          setNotification(
-            {
-              message: `Deleted ${blog.title} blog`,
-              type: 'success',
-            },
-            4000
-          )
+      dispatch(
+        setNotification(
+          {
+            message: `Deleted ${blog.title} blog`,
+            type: 'success',
+          },
+          4000
         )
-      } catch (error) {
-        dispatch(
-          setNotification(
-            { message: error.response.data.error, type: 'error' },
-            4000
-          )
-        )
-      }
+      )
+
+      navigate('/')
     }
   }
 
@@ -78,22 +52,21 @@ const Blog = ({ blog }) => {
     blog.user.username
 
   return (
-    <div className='blog' style={blogStyle}>
-      <div className='visibleByDefault'>
-        <span>{blog.title}</span> <span>{blog.author}</span>
-        <button className='viewButton' onClick={toggleView}>
-          {view ? 'hide' : 'view'}
-        </button>
+    <div className='blog'>
+      <div>
+        <h2>
+          <span>{blog.title}</span> <span>{blog.author}</span>
+        </h2>
       </div>
-      <div className='hiddenByDefault' style={showWhenVisible}>
-        <p>{blog.url}</p>
+      <div>
+        <a href={blog.url}>{blog.url}</a>
         <p>
           <span>likes {blog.likes}</span>
           <button className='likeButton' onClick={likeBlog}>
             like
           </button>
         </p>
-        <p>{blog.user.name}</p>
+        <p>added by{blog.user.name}</p>
 
         {removeButtonVisible ? (
           <button className='removeButton' onClick={removeBlog}>

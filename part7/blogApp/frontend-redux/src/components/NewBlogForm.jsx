@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const NewBlogForm = ({ blogFormRef }) => {
+const NewBlogForm = ({ blogFormRef, handleLogout }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -12,29 +12,34 @@ const NewBlogForm = ({ blogFormRef }) => {
 
   const addNewBlog = async (event) => {
     event.preventDefault()
-    try {
-      dispatch(createBlog({ title, author, url }))
-      blogFormRef.current.toggleVisibility()
-      dispatch(
-        setNotification(
-          {
-            message: `a new Blog ${title} by ${author} added`,
-            type: 'success',
-          },
-          4000
+
+    await dispatch(createBlog({ title, author, url }))
+      .then(() => {
+        blogFormRef.current.toggleVisibility()
+        dispatch(
+          setNotification(
+            {
+              message: `a new Blog ${title} by ${author} added`,
+              type: 'success',
+            },
+            4000
+          )
         )
-      )
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    } catch (error) {
-      dispatch(
-        setNotification(
-          { message: error.response.data.error, type: 'error' },
-          4000
+        setTitle('')
+        setAuthor('')
+        setUrl('')
+      })
+      .catch((error) => {
+        dispatch(
+          setNotification(
+            {
+              message: error.response.data.error,
+              type: 'error',
+            },
+            4000
+          )
         )
-      )
-    }
+      })
   }
 
   return (

@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { initializeUser, logoutUser } from './reducers/userReducer'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, Link, useMatch } from 'react-router-dom'
 import Users from './components/Users'
 
 const App = () => {
@@ -38,10 +38,13 @@ const App = () => {
   const newBlogForm = () => {
     return (
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
-        <NewBlogForm blogFormRef={blogFormRef} />
+        <NewBlogForm blogFormRef={blogFormRef} handleLogout={handleLogout} />
       </Togglable>
     )
   }
+
+  const match = useMatch('/blogs/:id')
+  const blog = match ? blogs.find((blog) => blog.id === match.params.id) : null
 
   if (user === null) {
     return <LoginForm />
@@ -49,10 +52,20 @@ const App = () => {
 
   return (
     <div>
-      <h2>blogs</h2>
+      <nav>
+        <div>
+          <Link to='/'>blogs</Link>
+        </div>
+        <div>
+          <Link to='/users'>users</Link>
+        </div>
+        <p>
+          {user.name} logged in <button onClick={handleLogout}>logout</button>
+        </p>
+      </nav>
+      <h1>blog app</h1>
       <Notification />
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
+
       <Routes>
         <Route
           path='/'
@@ -60,11 +73,18 @@ const App = () => {
             <>
               {newBlogForm()}{' '}
               {blogs.map((blog) => (
-                <Blog key={blog.id} blog={blog} />
+                <Link
+                  className='blogLink'
+                  to={`/blogs/${blog.id}`}
+                  key={blog.id}
+                >
+                  {blog.title}
+                </Link>
               ))}
             </>
           }
         />
+        <Route path='/blogs/:id' element={<Blog blog={blog} />} />
         <Route path='/users/*' element={<Users />} />
       </Routes>
     </div>

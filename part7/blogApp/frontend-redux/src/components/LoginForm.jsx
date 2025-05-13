@@ -12,24 +12,26 @@ const LoginForm = ({ login }) => {
 
   const notification = useSelector((state) => state.notification)
 
-  const handleLogin = (event) => {
+  const handleLogin = async (event) => {
     event.preventDefault()
-    try {
-      dispatch(loginUser({ username, password }))
-      dispatch(
-        setNotification(
-          { message: `${username} logged in`, type: 'success' },
-          4000
+
+    dispatch(loginUser({ username, password }))
+      .then((res) => {
+        dispatch(
+          setNotification(
+            { message: `${username} logged in`, type: 'success' },
+            4000
+          )
+        )
+      })
+      .catch((error) =>
+        dispatch(
+          setNotification(
+            { message: 'invalid username or password', type: 'error' },
+            4000
+          )
         )
       )
-    } catch (error) {
-      dispatch(
-        setNotification(
-          { message: error.response.data.error, type: 'error' },
-          4000
-        )
-      )
-    }
   }
 
   return (

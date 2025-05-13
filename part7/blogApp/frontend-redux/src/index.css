@@ -19,3 +19,23 @@
   font-size: 16px;
   margin: 10px 0;
 }
+
+.blogLink {
+  border: 1px solid black;
+  padding: 10px 5px;
+  margin-block: 20px;
+  display: block;
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  padding: 10px 5px;
+  gap: 10px;
+  background-color: lightgray;
+}
+
+nav p {
+  padding: 0;
+  margin: 0;
+}
