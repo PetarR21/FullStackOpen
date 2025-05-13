@@ -65,7 +65,7 @@ const App = () => {
             </>
           }
         />
-        <Route path='/users' element={<Users />} />
+        <Route path='/users/*' element={<Users />} />
       </Routes>
     </div>
   )
