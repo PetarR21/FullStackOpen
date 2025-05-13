@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
-import blogService from './services/blogs'
 import Togglable from './components/Togglable'
 import NewBlogForm from './components/NewBlogForm'
 import LoginForm from './components/LoginForm'

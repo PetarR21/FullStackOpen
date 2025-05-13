@@ -1,28 +1,30 @@
-import { useState, useEffect, useRef, useReducer } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
-import loginService from './services/login'
 import Togglable from './components/Togglable'
 import NewBlogForm from './components/NewBlogForm'
 import LoginForm from './components/LoginForm'
 import { useQuery } from '@tanstack/react-query'
-import { useNotify, useRemoveNotification } from './context/NotificationContext'
+import { useRemoveNotification } from './context/NotificationContext'
+import {
+  useInitializeUser,
+  useRemoveUser,
+  useUserValue,
+} from './context/UserContext'
 
 const App = () => {
-  const [user, setUser] = useState(null)
+  const user = useUserValue()
+  const initializeUser = useInitializeUser()
 
   const blogFormRef = useRef()
-  const notify = useNotify()
+
   const removeNotification = useRemoveNotification()
 
+  const removeUser = useRemoveUser()
+
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    initializeUser()
   }, [])
 
   const result = useQuery({
@@ -36,23 +38,10 @@ const App = () => {
 
   const blogs = result.data
 
-  const handleLogin = async (credentialsObject) => {
-    try {
-      const user = await loginService.login(credentialsObject)
-
-      blogService.setToken(user.token)
-      setUser(user)
-      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
-      notify({ message: `${user.name} logged in`, type: 'success' })
-    } catch (error) {
-      notify({ message: error.response.data.error, type: 'error' })
-    }
-  }
-
   const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogAppUser')
     blogService.setToken(null)
-    setUser(null)
+    removeUser()
     removeNotification()
   }
 
@@ -65,7 +54,7 @@ const App = () => {
   }
 
   if (user === null) {
-    return <LoginForm login={handleLogin} />
+    return <LoginForm />
   }
 
   const sortedBlogs = blogs.sort((blog1, blog2) => blog2.likes - blog1.likes)
