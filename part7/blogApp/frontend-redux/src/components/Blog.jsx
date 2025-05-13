@@ -1,7 +1,12 @@
 import { useState } from 'react'
+import { updateBlogLikes } from '../reducers/blogsReducer'
+import { setNotification } from '../reducers/notificationReducer'
+import { useDispatch } from 'react-redux'
+import { deleteBlog } from '../reducers/blogsReducer'
 
-const Blog = ({ blog, updateLikes, deleteBlog }) => {
+const Blog = ({ blog }) => {
   const [view, setView] = useState(false)
+  const dispatch = useDispatch()
 
   const blogStyle = {
     paddingTop: 10,
@@ -20,14 +25,52 @@ const Blog = ({ blog, updateLikes, deleteBlog }) => {
   const likeBlog = (event) => {
     event.preventDefault()
 
-    updateLikes({ likes: blog.likes + 1 }, blog.id)
+    try {
+      dispatch(updateBlogLikes({ ...blog, likes: blog.likes + 1 }))
+      dispatch(
+        setNotification(
+          {
+            message: `Liked ${blog.title} blog`,
+            type: 'success',
+          },
+          4000
+        )
+      )
+    } catch (error) {
+      dispatch(
+        setNotification(
+          { message: error.response.data.error, type: 'error' },
+          4000
+        )
+      )
+    }
   }
 
   const removeBlog = (event) => {
     event.preventDefault()
 
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`))
-      deleteBlog(blog)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author} ?`)) {
+      try {
+        dispatch(deleteBlog(blog.id))
+
+        dispatch(
+          setNotification(
+            {
+              message: `Deleted ${blog.title} blog`,
+              type: 'success',
+            },
+            4000
+          )
+        )
+      } catch (error) {
+        dispatch(
+          setNotification(
+            { message: error.response.data.error, type: 'error' },
+            4000
+          )
+        )
+      }
+    }
   }
 
   const removeButtonVisible =

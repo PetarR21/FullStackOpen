@@ -64,54 +64,6 @@ const App = () => {
     setNotification(null)
   }
 
-  const updateBlogLikes = async (updatedLikes, id) => {
-    try {
-      const updatedBlog = await blogService.update(updatedLikes, id)
-      dispatch(
-        setNotification(
-          {
-            message: `Liked ${updatedBlog.title} blog`,
-            type: 'success',
-          },
-          4000
-        )
-      )
-      setBlogs(
-        blogs.map((blog) => (blog.id === updatedBlog.id ? updatedBlog : blog))
-      )
-    } catch (error) {
-      dispatch(
-        setNotification(
-          { message: error.response.data.error, type: 'error' },
-          4000
-        )
-      )
-    }
-  }
-
-  const removeBlog = async (blogToDelete) => {
-    try {
-      await blogService.remove(blogToDelete.id)
-      setBlogs(blogs.filter((blog) => blog.id !== blogToDelete.id))
-      dispatch(
-        setNotification(
-          {
-            message: `Deleted ${blogToDelete.title} blog`,
-            type: 'success',
-          },
-          4000
-        )
-      )
-    } catch (error) {
-      dispatch(
-        setNotification(
-          { message: error.response.data.error, type: 'error' },
-          4000
-        )
-      )
-    }
-  }
-
   const newBlogForm = () => {
     return (
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
@@ -133,12 +85,7 @@ const App = () => {
       </p>
       {newBlogForm()}
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          updateLikes={updateBlogLikes}
-          deleteBlog={removeBlog}
-        />
+        <Blog key={blog.id} blog={blog} />
       ))}
     </div>
   )
