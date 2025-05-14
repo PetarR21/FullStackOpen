@@ -1,10 +1,12 @@
-import { updateBlogLikes } from '../reducers/blogsReducer'
+import { commentBlog, updateBlogLikes } from '../reducers/blogsReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useDispatch } from 'react-redux'
 import { deleteBlog } from '../reducers/blogsReducer'
 import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 
 const Blog = ({ blog }) => {
+  const [comment, setComment] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
@@ -47,6 +49,34 @@ const Blog = ({ blog }) => {
     }
   }
 
+  const addComment = (event) => {
+    event.preventDefault()
+    dispatch(commentBlog(blog.id, comment))
+      .then(() => {
+        setComment('')
+        dispatch(
+          setNotification(
+            {
+              message: `Commented on a ${blog.title} blog`,
+              type: 'success',
+            },
+            4000
+          )
+        )
+      })
+      .catch((error) => {
+        dispatch(
+          setNotification(
+            {
+              message: error.response.data.error,
+              type: 'error',
+            },
+            4000
+          )
+        )
+      })
+  }
+
   const removeButtonVisible =
     JSON.parse(localStorage.getItem('loggedBlogAppUser')).username ===
     blog.user.username
@@ -73,6 +103,24 @@ const Blog = ({ blog }) => {
             remove
           </button>
         ) : null}
+      </div>
+      <div>
+        <h3>comments</h3>
+        <form onSubmit={addComment}>
+          <input
+            type='text'
+            value={comment}
+            onChange={({ target }) => {
+              setComment(target.value)
+            }}
+          />
+          <button type='submit'>add comment</button>
+        </form>
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={comment}>{comment}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )

@@ -13,7 +13,7 @@ const NewBlogForm = ({ blogFormRef, handleLogout }) => {
   const addNewBlog = async (event) => {
     event.preventDefault()
 
-    await dispatch(createBlog({ title, author, url }))
+    dispatch(createBlog({ title, author, url }))
       .then(() => {
         blogFormRef.current.toggleVisibility()
         dispatch(
@@ -30,6 +30,9 @@ const NewBlogForm = ({ blogFormRef, handleLogout }) => {
         setUrl('')
       })
       .catch((error) => {
+        if (error.response.data.error === 'token expired') {
+          handleLogout()
+        }
         dispatch(
           setNotification(
             {
