@@ -88,7 +88,7 @@ const Blog = ({ blog }) => {
           <span>{blog.title}</span> <span>{blog.author}</span>
         </h2>
       </div>
-      <div>
+      <div className='details'>
         <a href={blog.url}>{blog.url}</a>
         <p>
           <span>likes {blog.likes}</span>
@@ -96,15 +96,19 @@ const Blog = ({ blog }) => {
             like
           </button>
         </p>
-        <p>added by{blog.user.name}</p>
+        <p>
+          added by <strong>{blog.user.name}</strong>
+        </p>
 
         {removeButtonVisible ? (
-          <button className='removeButton' onClick={removeBlog}>
-            remove
-          </button>
+          <div>
+            <button className='removeButton' onClick={removeBlog}>
+              remove
+            </button>
+          </div>
         ) : null}
       </div>
-      <div>
+      <div className='comments'>
         <h3>comments</h3>
         <form onSubmit={addComment}>
           <input

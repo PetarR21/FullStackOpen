@@ -3,10 +3,13 @@ import Notification from './Notification'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../reducers/userReducer'
 import { setNotification } from '../reducers/notificationReducer'
+import { useNavigate } from 'react-router-dom'
 
 const LoginForm = ({ login }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const navigate = useNavigate()
 
   const dispatch = useDispatch()
 
@@ -23,6 +26,7 @@ const LoginForm = ({ login }) => {
             4000
           )
         )
+        navigate('/')
       })
       .catch((error) =>
         dispatch(
@@ -35,32 +39,40 @@ const LoginForm = ({ login }) => {
   }
 
   return (
-    <div>
-      <h2>log in to application</h2>
+    <div className='login'>
+      <h2>Log in to application</h2>
       <Notification notification={notification} />
       <form onSubmit={handleLogin}>
-        <div>
-          <label htmlFor='username'>username</label>
+        <div className='login-group'>
+          <label className='visually-hidden' htmlFor='username'>
+            username
+          </label>
           <input
             id='username'
+            className='username'
             name='username'
             type='text'
             value={username}
+            placeholder='Username'
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
-        <div>
-          <label htmlFor='password'>password</label>
+        <div className='login-group'>
+          <label className='visually-hidden' htmlFor='password'>
+            password
+          </label>
           <input
             id='password'
+            className='username'
             name='password'
             type='password'
             value={password}
+            placeholder='Password'
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
         <button id='login-button' type='submit'>
-          login
+          log in
         </button>
       </form>
     </div>

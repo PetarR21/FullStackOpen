@@ -46,37 +46,46 @@ const NewBlogForm = ({ blogFormRef, handleLogout }) => {
   }
 
   return (
-    <div className='formDiv'>
+    <div className='createForm'>
       <h2>create new</h2>
       <form onSubmit={addNewBlog}>
         <div>
-          <label htmlFor='title'>title</label>
+          <label className='visually-hidden' htmlFor='title'>
+            title
+          </label>
           <input
             id='title'
             name='title'
             type='text'
             value={title}
             onChange={({ target }) => setTitle(target.value)}
+            placeholder='Title'
           />
         </div>
         <div>
-          <label htmlFor='author'>author</label>
+          <label className='visually-hidden' htmlFor='author'>
+            author
+          </label>
           <input
             id='author'
             name='author'
             type='text'
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
+            placeholder='Author'
           />
         </div>
         <div>
-          <label htmlFor='url'>url</label>
+          <label className='visually-hidden' htmlFor='url'>
+            url
+          </label>
           <input
             id='url'
             name='url'
             type='text'
             value={url}
             onChange={({ target }) => setUrl(target.value)}
+            placeholder='URL'
           />
         </div>
         <button id='create-button' type='submit'>

@@ -8,11 +8,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs } from './reducers/blogsReducer'
 import { initializeUser, logoutUser } from './reducers/userReducer'
-import { Route, Routes, Link, useMatch } from 'react-router-dom'
+import { Route, Routes, Link, useMatch, useNavigate } from 'react-router-dom'
 import Users from './components/Users'
+import Navbar from './components/Navbar'
 
 const App = () => {
   const user = useSelector((state) => state.user)
+  const navigate = useNavigate()
 
   const dispatch = useDispatch()
 
@@ -33,6 +35,7 @@ const App = () => {
   const handleLogout = () => {
     dispatch(logoutUser())
     setNotification(null)
+    navigate('/login')
   }
 
   const newBlogForm = () => {
@@ -51,41 +54,52 @@ const App = () => {
   }
 
   return (
-    <div>
-      <nav>
-        <div>
-          <Link to='/'>blogs</Link>
-        </div>
-        <div>
-          <Link to='/users'>users</Link>
-        </div>
-        <p>
-          {user.name} logged in <button onClick={handleLogout}>logout</button>
-        </p>
-      </nav>
-      <h1>blog app</h1>
-      <Notification />
-
+    <div className='container'>
       <Routes>
         <Route
           path='/'
           element={
-            <>
+            <div className='blogPage'>
+              <div>
+                <Navbar handleLogout={handleLogout} />
+                <h1>Blog App</h1>
+                <Notification />
+              </div>
               {newBlogForm()}{' '}
-              {blogs.map((blog) => (
-                <Link
-                  className='blogLink'
-                  to={`/blogs/${blog.id}`}
-                  key={blog.id}
-                >
-                  {blog.title}
-                </Link>
-              ))}
-            </>
+              <div className='blogs'>
+                {blogs.map((blog) => (
+                  <Link
+                    className='blogLink'
+                    to={`/blogs/${blog.id}`}
+                    key={blog.id}
+                  >
+                    {blog.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
           }
         />
-        <Route path='/blogs/:id' element={<Blog blog={blog} />} />
-        <Route path='/users/*' element={<Users />} />
+        <Route
+          path='/blogs/:id'
+          element={
+            <div>
+              <Navbar handleLogout={handleLogout} />
+              <Notification />
+              <Blog blog={blog} />
+            </div>
+          }
+        />
+        <Route
+          path='/users/*'
+          element={
+            <div>
+              <Navbar handleLogout={handleLogout} />
+              <Users />
+            </div>
+          }
+        />
+        <Route path='/login' element={<LoginForm />} />
       </Routes>
     </div>
   )

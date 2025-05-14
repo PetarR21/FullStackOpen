@@ -22,7 +22,7 @@ const Users = () => {
         <Route
           path='/'
           element={
-            <div>
+            <div className='usersPage'>
               <h2>Users</h2>
               <table>
                 <thead>
@@ -35,7 +35,9 @@ const Users = () => {
                   {users.map((user) => (
                     <tr key={user.id}>
                       <td>
-                        <Link to={`/users/${user.id}`}>{user.name}</Link>
+                        <Link className='usersLink' to={`/users/${user.id}`}>
+                          {user.name}
+                        </Link>
                       </td>
                       <td>{user.blogs.length}</td>
                     </tr>
