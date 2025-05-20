@@ -1,6 +1,7 @@
 {
-  "name": "phonebook",
+  "name": "library",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -9,13 +10,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "type": "commonjs",
+  "devDependencies": {
+    "node-dev": "^8.0.0"
+  },
   "dependencies": {
     "@apollo/server": "^4.12.1",
     "graphql": "^16.11.0"
-  },
-  "devDependencies": {
-    "node-dev": "^8.0.0",
-    "uuid": "^11.1.0"
   }
 }
