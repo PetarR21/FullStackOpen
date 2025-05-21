@@ -1,6 +1,7 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 const { v1: uuid } = require('uuid')
+const { GraphQLError } = require('graphql')
 
 let authors = [
   {
@@ -90,8 +91,8 @@ const typeDefs = `
   
   type Book {
     title: String!
-    published: Int
-    author: String
+    published: Int!
+    author: String!
     id: ID!
     genres: [String!]!
   }
@@ -143,6 +144,51 @@ const resolvers = {
   },
   Mutation: {
     addBook: (root, args) => {
+      if (!args.title) {
+        throw new GraphQLError('Title is required', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+          },
+        })
+      }
+
+      if (books.find((b) => b.title === args.title)) {
+        throw new GraphQLError('Title must be unique', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.title,
+          },
+        })
+      }
+
+      if (!args.author) {
+        throw new GraphQLError('Author is required', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.author,
+          },
+        })
+      }
+
+      if (!args.published) {
+        throw new GraphQLError('Published is required', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.published,
+          },
+        })
+      }
+
+      if (!args.genres) {
+        throw new GraphQLError('Genres is required', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.genres,
+          },
+        })
+      }
+
       const newBook = { ...args, id: uuid() }
 
       if (!authors.find((author) => author.name === newBook.author)) {
