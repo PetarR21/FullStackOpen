@@ -10,8 +10,8 @@ const NewBook = (props) => {
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
 
-  const [createBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+  const [addBook] = useMutation(ADD_BOOK, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
     onCompleted: () => {
       setTitle('')
       setPublished('')
@@ -22,8 +22,31 @@ const NewBook = (props) => {
       props.setPage('books')
     },
     onError: (error) => {
+      console.log(error.graphQLErrors)
       const messages = error.graphQLErrors.map((e) => e.message).join('\n')
       props.setError(messages)
+    },
+    update: (cache, response) => {
+      cache.updateQuery(
+        { query: ALL_BOOKS, variables: { genre: 'all' } },
+        ({ allBooks }) => {
+          return {
+            allBooks: allBooks.concat(response.data.addBook),
+          }
+        }
+      )
+      genres.forEach((g) => {
+        if (cache.readQuery({ query: ALL_BOOKS, variables: { genre: g } })) {
+          cache.updateQuery(
+            { query: ALL_BOOKS, variables: { genre: g } },
+            ({ allBooks }) => {
+              return {
+                allBooks: allBooks.concat(response.data.addBook),
+              }
+            }
+          )
+        }
+      })
     },
   })
 
@@ -34,7 +57,7 @@ const NewBook = (props) => {
   const submit = async (event) => {
     event.preventDefault()
 
-    createBook({
+    addBook({
       variables: { title, author, published: Number(published), genres },
     })
   }
