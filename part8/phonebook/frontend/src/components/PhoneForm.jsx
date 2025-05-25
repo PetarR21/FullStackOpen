@@ -1,13 +1,25 @@
 import { useEffect, useState } from 'react'
 import { useMutation } from '@apollo/client'
 
-import { EDIT_NUMBER } from '../queries'
+import { ALL_PERSONS, EDIT_NUMBER } from '../queries'
 
 const PhoneForm = ({ setError }) => {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
 
-  const [changeNumber, result] = useMutation(EDIT_NUMBER)
+  const [changeNumber, result] = useMutation(EDIT_NUMBER, {
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.map((p) => {
+            return p.id === response.data.editNumber.id
+              ? response.data.editNumber
+              : p
+          }),
+        }
+      })
+    },
+  })
 
   const submit = (event) => {
     event.preventDefault()

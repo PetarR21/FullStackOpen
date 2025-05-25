@@ -145,6 +145,8 @@ const resolvers = {
           },
         })
       }
+
+      return person
     },
     createUser: async (root, args) => {
       const user = new User({ username: args.username })

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import Select from 'react-select'
 
 const Authors = (props) => {
-  const [name, setName] = useState('')
+  const [name, setName] = useState('Select')
   const [born, setBorn] = useState('')
 
   const result = useQuery(ALL_AUTHORS)
