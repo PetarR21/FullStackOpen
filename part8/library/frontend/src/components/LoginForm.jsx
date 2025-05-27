@@ -22,7 +22,7 @@ const LoginForm = ({ show, setPage, setError, setToken }) => {
       setPassword('')
       setPage('books')
     }
-  }, [result.data])
+  }, [result.data, setPage, setToken])
 
   if (!show) {
     return null
