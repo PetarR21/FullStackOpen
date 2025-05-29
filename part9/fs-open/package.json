@@ -5,12 +5,17 @@
   "main": "index.ts",
   "scripts": {
     "ts-node": "ts-node",
+    "start": "ts-node index.ts",
     "multiply": "ts-node multiplier.ts",
     "calculate": "ts-node calculator.ts"
   },
   "keywords": [],
   "type": "commonjs",
   "devDependencies": {
+    "@types/express": "^5.0.2",
     "@types/node": "^22.15.23"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
   }
 }
