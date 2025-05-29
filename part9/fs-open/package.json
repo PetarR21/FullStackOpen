@@ -6,6 +6,7 @@
   "scripts": {
     "ts-node": "ts-node",
     "start": "ts-node index.ts",
+    "dev": "ts-node-dev index.ts",
     "multiply": "ts-node multiplier.ts",
     "calculate": "ts-node calculator.ts"
   },
@@ -13,7 +14,8 @@
   "type": "commonjs",
   "devDependencies": {
     "@types/express": "^5.0.2",
-    "@types/node": "^22.15.23"
+    "@types/node": "^22.15.23",
+    "ts-node-dev": "^2.0.0"
   },
   "dependencies": {
     "express": "^5.1.0"
