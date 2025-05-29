@@ -1,4 +1,4 @@
-import { argv } from 'process';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isNotNumber } from './utils';
 
 interface ExerciseArgumentValues {
@@ -39,7 +39,35 @@ const parseArguments = (args: string[]): ExerciseArgumentValues => {
   };
 };
 
-const calculateExercises = (daily: number[], target: number): Result => {
+export const parseExercisesArguments = (
+  dailyExercises: any[],
+  target: any
+): ExerciseArgumentValues => {
+  if (dailyExercises.length < 1) throw new Error('malformatted parameters');
+
+  let dailyHours: number[] = [];
+  for (let index = 0; index < dailyExercises.length; index++) {
+    if (!isNotNumber(dailyExercises[index])) {
+      dailyHours = [...dailyHours, Number(dailyExercises[index])];
+    } else {
+      throw new Error('malformatted parameters');
+    }
+  }
+
+  let parsedTarget: number = 0;
+  if (!isNotNumber(target)) {
+    parsedTarget = Number(target);
+  } else {
+    throw new Error('malformatted parameters');
+  }
+
+  return {
+    dailyHours,
+    target: parsedTarget,
+  };
+};
+
+export const calculateExercises = (daily: number[], target: number): Result => {
   // Period length
   const periodLength: number = daily.length;
 

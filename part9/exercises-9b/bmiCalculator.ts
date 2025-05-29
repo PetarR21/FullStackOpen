@@ -19,7 +19,7 @@ const parseArgumentsCLI = (args: string[]): weightAndHeight => {
   }
 };
 
-export const parseHeightAndWeight = (height: any, weight: any) => {
+export const parseHeightAndWeight = (height: unknown, weight: unknown) => {
   if (!isNotNumber(height) && !isNotNumber(weight)) {
     return {
       height: Number(height),
