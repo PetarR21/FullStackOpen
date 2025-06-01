@@ -1,3 +1,7 @@
+import { z } from 'zod';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { NewEntrySchema } from './utils';
+
 export enum Weather {
   Sunny = 'sunny',
   Rainy = 'rainy',
@@ -18,9 +22,9 @@ export interface DiaryEntry {
   date: string;
   weather: Weather;
   visibility: Visibility;
-  comment: string;
+  comment?: string;
 }
 
-export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
+export type NewDiaryEntry = z.infer<typeof NewEntrySchema>;
 
-export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
+export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
