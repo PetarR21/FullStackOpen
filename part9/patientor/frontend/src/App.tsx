@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { Route, Link, Routes, useMatch } from 'react-router-dom'
-import { Button, Divider, Container, Typography } from '@mui/material'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Route, Link, Routes, useMatch } from 'react-router-dom';
+import { Button, Divider, Container, Typography } from '@mui/material';
 
-import { apiBaseUrl } from './constants'
-import { Patient } from './types'
+import { apiBaseUrl } from './constants';
+import { Patient } from './types';
 
-import patientService from './services/patients'
-import PatientListPage from './components/PatientListPage'
-import PatientPage from './components/PatientPage'
+import patientService from './services/patients';
+import PatientListPage from './components/PatientListPage';
+import PatientPage from './components/PatientPage';
 
 const App = () => {
-  const [patients, setPatients] = useState<Patient[]>([])
+  const [patients, setPatients] = useState<Patient[]>([]);
 
   useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`)
+    void axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatientList = async () => {
-      const patients = await patientService.getAll()
-      setPatients(patients)
-    }
-    void fetchPatientList()
-  }, [])
+      const patients = await patientService.getAll();
+      setPatients(patients);
+    };
+    void fetchPatientList();
+  }, []);
 
-  const match = useMatch('/patients/:id')
+  const match = useMatch('/patients/:id');
 
   return (
     <div className='App'>
@@ -38,13 +38,18 @@ const App = () => {
         <Routes>
           <Route
             path='/'
-            element={<PatientListPage patients={patients} setPatients={setPatients} />}
+            element={
+              <PatientListPage patients={patients} setPatients={setPatients} />
+            }
           />
-          <Route path='/patients/:id' element={<PatientPage id={match?.params.id} />} />
+          <Route
+            path='/patients/:id'
+            element={<PatientPage id={match?.params.id} />}
+          />
         </Routes>
       </Container>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

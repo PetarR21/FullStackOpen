@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Box,
   Table,
@@ -8,55 +8,58 @@ import {
   TableCell,
   TableRow,
   TableBody,
-} from '@mui/material'
-import axios from 'axios'
+} from '@mui/material';
+import axios from 'axios';
 
-import { PatientFormValues, Patient } from '../../types'
-import AddPatientModal from '../AddPatientModal'
+import { PatientFormValues, Patient } from '../../types';
+import AddPatientModal from '../AddPatientModal';
 
-import HealthRatingBar from '../HealthRatingBar'
+import HealthRatingBar from '../HealthRatingBar';
 
-import patientService from '../../services/patients'
-import { useNavigate } from 'react-router-dom'
+import patientService from '../../services/patients';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
-  patients: Patient[]
-  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
 }
 
 const PatientListPage = ({ patients, setPatients }: Props) => {
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [error, setError] = useState<string>()
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const openModal = (): void => setModalOpen(true)
+  const openModal = (): void => setModalOpen(true);
 
   const closeModal = (): void => {
-    setModalOpen(false)
-    setError(undefined)
-  }
+    setModalOpen(false);
+    setError(undefined);
+  };
 
   const submitNewPatient = async (values: PatientFormValues) => {
     try {
-      const patient = await patientService.create(values)
-      setPatients(patients.concat(patient))
-      setModalOpen(false)
+      const patient = await patientService.create(values);
+      setPatients(patients.concat(patient));
+      setModalOpen(false);
     } catch (e: unknown) {
       if (axios.isAxiosError(e)) {
         if (e?.response?.data && typeof e?.response?.data === 'string') {
-          const message = e.response.data.replace('Something went wrong. Error: ', '')
-          console.error(message)
-          setError(message)
+          const message = e.response.data.replace(
+            'Something went wrong. Error: ',
+            ''
+          );
+          console.error(message);
+          setError(message);
         } else {
-          setError('Unrecognized axios error')
+          setError('Unrecognized axios error');
         }
       } else {
-        console.error('Unknown error', e)
-        setError('Unknown error')
+        console.error('Unknown error', e);
+        setError('Unknown error');
       }
     }
-  }
+  };
 
   return (
     <div className='App'>
@@ -80,7 +83,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
               <TableCell>
                 <Button
                   onClick={() => {
-                    navigate(`/patients/${patient.id}`)
+                    navigate(`/patients/${patient.id}`);
                   }}
                 >
                   {patient.name}
@@ -105,7 +108,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
         Add New Patient
       </Button>
     </div>
-  )
-}
+  );
+};
 
-export default PatientListPage
+export default PatientListPage;
