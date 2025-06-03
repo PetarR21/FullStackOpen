@@ -13,6 +13,16 @@ router.get('/', (_req, res: Response<NonSensitivePatient[]>) => {
   res.send(patientService.getNonSensitivePatients());
 });
 
+router.get('/:id', (req, res: Response<Patient>) => {
+  const patient = patientService.findById(req.params.id);
+
+  if (patient) {
+    res.json(patient);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 /* Middleware */
 const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
@@ -23,12 +33,7 @@ const newPatientParser = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-const errorMiddleware = (
-  error: unknown,
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const errorMiddleware = (error: unknown, _req: Request, res: Response, next: NextFunction) => {
   if (error instanceof z.ZodError) {
     res.status(400).send({ error: error.issues });
   } else {
