@@ -5,6 +5,7 @@ import diagnosisService from '../../services/diagnoses';
 import { Patient, Entry, Diagnosis } from '../../types';
 import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
+import EntryDetails from './EntryDetails';
 
 const PatientPage = ({ id }: { id: string | undefined }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -62,7 +63,10 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
       <h3>entries</h3>
-      {Object.values(patient.entries).map((entry: Entry) => {
+      {patient.entries.map((entry: Entry) => {
+        return <EntryDetails entry={entry} />;
+      })}
+      {/* {Object.values(patient.entries).map((entry: Entry) => {
         return (
           <div key={entry.id}>
             <p>
@@ -83,7 +87,7 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
             </ul>
           </div>
         );
-      })}
+      })} */}
     </div>
   );
 };
