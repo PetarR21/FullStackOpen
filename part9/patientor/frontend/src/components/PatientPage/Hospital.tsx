@@ -7,7 +7,9 @@ const Hospital = ({ entry }: { entry: HospitalEntry }) => {
       <div>
         {entry.date} <LocalHospitalIcon />
       </div>
-      <p>{entry.description}</p>
+      <p>
+        <em>{entry.description}</em>
+      </p>
       <p>diagnose by {entry.specialist}</p>
       <p>
         discharged {entry.discharge.date}: {entry.discharge.criteria}
