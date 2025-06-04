@@ -1,7 +1,7 @@
 import express from 'express';
 
 import { Request, Response, NextFunction } from 'express';
-import { NewPatient, NonSensitivePatient, Patient } from '../types';
+import { Diagnosis, Entry, NewEntry, NewPatient, NonSensitivePatient, Patient } from '../types';
 import patientService from '../services/patientService';
 
 import { NewPatientSchema } from '../utils';
@@ -51,6 +51,10 @@ router.post(
     res.json(addedPatient);
   }
 );
+
+router.post('/:id/entries', (req: Request<unknown, unknown, NewEntry>, res: Response<Entry>) => {
+  const newDiary = 
+});
 
 router.use(errorMiddleware);
 
