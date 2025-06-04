@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { EntryType } from '../../types';
+import { EntryType, HealthCheckRating } from '../../types';
 import {
   FormGroup,
   Input,
@@ -20,12 +20,25 @@ const typeOptions: TypeOption[] = Object.values(EntryType).map((e) => ({
   label: e,
 }));
 
+interface RatingOption {
+  value: HealthCheckRating;
+  label: string;
+}
+
+const ratingOptions: RatingOption[] = Object.values(HealthCheckRating)
+  .filter((v) => typeof v === 'number')
+  .map((h) => ({
+    value: h,
+    label: h.toString(),
+  }));
+
 const AddEntryForm = ({ diagnosisCodes }: { diagnosisCodes: string[] }) => {
   const [type, setType] = useState(EntryType.HealthCheck);
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
   const [codes, setCodes] = useState<string[]>([]);
+  const [healthRating, setHealthRating] = useState(HealthCheckRating.Healthy);
 
   const onTypeChange = (event: SelectChangeEvent<string>) => {
     event.preventDefault();
@@ -46,6 +59,36 @@ const AddEntryForm = ({ diagnosisCodes }: { diagnosisCodes: string[] }) => {
     } = event;
 
     setCodes(typeof value === 'string' ? value.split(', ') : value);
+  };
+
+  const onRatingChange = (event: SelectChangeEvent<number>) => {
+    event.preventDefault();
+    if (typeof event.target.value === 'number') {
+      const value = event.target.value;
+      const rating = Object.values(HealthCheckRating)
+        .filter((v) => typeof v === 'number')
+        .find((r) => r === value);
+      if (rating) {
+        setHealthRating(rating);
+      }
+    }
+  };
+
+  const healthCheckSubform = () => {
+    return (
+      <FormGroup>
+        <InputLabel style={{ fontWeight: 'bold', marginBlock: 5 }}>
+          Health Check Rating:
+        </InputLabel>
+        <Select fullWidth value={healthRating} onChange={onRatingChange}>
+          {ratingOptions.map((option) => (
+            <MenuItem key={option.label} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormGroup>
+    );
   };
 
   return (
@@ -84,7 +127,7 @@ const AddEntryForm = ({ diagnosisCodes }: { diagnosisCodes: string[] }) => {
           label='Specialist'
           fullWidth
           value={specialist}
-          onChange={({ target }) => setDescription(target.value)}
+          onChange={({ target }) => setSpecialist(target.value)}
         />
       </FormGroup>
       <FormGroup>
@@ -99,6 +142,7 @@ const AddEntryForm = ({ diagnosisCodes }: { diagnosisCodes: string[] }) => {
           ))}
         </Select>
       </FormGroup>
+      {healthCheckSubform()}
     </form>
   );
 };
