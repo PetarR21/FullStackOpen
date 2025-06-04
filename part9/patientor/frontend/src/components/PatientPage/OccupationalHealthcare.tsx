@@ -7,7 +7,7 @@ const OccupationalHealthcare = ({
   entry: OccupationalHealthcareEntry;
 }) => {
   return (
-    <div className='entry'>
+    <div>
       <div>
         {entry.date} <WorkIcon /> {entry.employerName}
       </div>

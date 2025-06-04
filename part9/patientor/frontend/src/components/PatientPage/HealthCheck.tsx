@@ -23,7 +23,7 @@ const HealthCheck = ({ entry }: { entry: HealthCheckEntry }) => {
   }
 
   return (
-    <div className='entry'>
+    <div>
       <div>
         {entry.date} <MedicalInformationIcon />
       </div>

@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { AxiosError } from 'axios';
 import EntryDetails from './EntryDetails';
 import { Button } from '@mui/material';
+import AddEntryForm from './AddEntryForm';
 
 const PatientPage = ({ id }: { id: string | undefined }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -64,10 +65,26 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
       <h3>entries</h3>
+      <Button variant='contained' style={{ marginBottom: '2rem' }}>
+        Add New Entry
+      </Button>
+      <AddEntryForm diagnosisCodes={diagnoses.map((d) => d.code)} />
       {patient.entries.map((entry: Entry) => {
-        return <EntryDetails key={entry.id} entry={entry} />;
+        return (
+          <div key={entry.id} className='entry'>
+            <EntryDetails entry={entry} />
+            <ul>
+              {entry.diagnosisCodes?.map((c) => {
+                return (
+                  <li key={c}>
+                    {c} {`${findDignosisForCode(c)?.name}`}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
       })}
-      <Button variant='contained'>Add New Entry</Button>
     </div>
   );
 };

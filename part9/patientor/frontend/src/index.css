@@ -4,3 +4,10 @@
   padding: 1rem;
   margin-bottom: 1rem;
 }
+
+.entryForm {
+  border: 1px dashed black;
+  padding: 2rem;
+  display: grid;
+  gap: 1rem;
+}

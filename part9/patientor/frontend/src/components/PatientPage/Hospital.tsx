@@ -3,7 +3,7 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 
 const Hospital = ({ entry }: { entry: HospitalEntry }) => {
   return (
-    <div className='entry'>
+    <div>
       <div>
         {entry.date} <LocalHospitalIcon />
       </div>
