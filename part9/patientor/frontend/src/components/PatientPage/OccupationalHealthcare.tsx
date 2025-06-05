@@ -14,6 +14,14 @@ const OccupationalHealthcare = ({
       <p>
         <em>{entry.description}</em>
       </p>
+      {entry?.sickLeave ? (
+        <p>
+          Sick leave: from {entry.sickLeave.startDate} to{' '}
+          {entry.sickLeave.endDate}
+        </p>
+      ) : (
+        ''
+      )}
       <p>diagnose by {entry.specialist}</p>
     </div>
   );

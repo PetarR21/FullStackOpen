@@ -38,7 +38,11 @@ export const parseNewEntry = (object: unknown): NewEntry => {
     'description' in object &&
     'date' in object &&
     'specialist' in object &&
-    'type' in object
+    'type' in object &&
+    object.description &&
+    object.date &&
+    object.specialist &&
+    object.type
   ) {
     const parsedDescription = z.string().parse(object.description);
     const parsedDate = z.string().date().parse(object.date);
@@ -65,7 +69,11 @@ export const parseNewEntry = (object: unknown): NewEntry => {
       }
       throw new Error('Inccorect data: some fields are missing');
     } else if (parsedType === 'OccupationalHealthcare') {
-      if ('employerName' in object && 'sickLeave' in object) {
+      if (
+        'employerName' in object &&
+        'sickLeave' in object &&
+        object.employerName
+      ) {
         const sickLeaveSchema = z.object({
           startDate: z.string().date(),
           endDate: z.string().date(),
@@ -78,7 +86,10 @@ export const parseNewEntry = (object: unknown): NewEntry => {
           sickLeave: sickLeaveSchema.parse(object.sickLeave),
         };
 
-        return newEntry;
+        if (newEntry.sickLeave.startDate && newEntry.sickLeave.endDate) {
+          return newEntry;
+        }
+        throw new Error('Inccorect data: some fields are missing');
       }
       throw new Error('Inccorect data: some fields are missing');
     } else if (parsedType === 'Hospital') {

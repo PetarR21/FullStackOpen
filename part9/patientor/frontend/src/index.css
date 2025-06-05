@@ -10,4 +10,13 @@
   padding: 2rem;
   display: grid;
   gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.leaveLabel {
+  margin: 1rem 0 0.25rem;
+}
+
+.leaveGroup {
+  padding-left: 1rem;
 }

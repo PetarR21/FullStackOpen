@@ -2,16 +2,19 @@ import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
 import patientService from '../../services/patients';
 import diagnosisService from '../../services/diagnoses';
-import { Patient, Entry, Diagnosis } from '../../types';
+import { Patient, Entry, Diagnosis, NewEntry } from '../../types';
 import { useEffect, useState } from 'react';
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import EntryDetails from './EntryDetails';
-import { Button } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import AddEntryForm from './AddEntryForm';
 
 const PatientPage = ({ id }: { id: string | undefined }) => {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [error, setError] = useState('');
+  const [showForm, setShowForm] = useState(false);
+  const [clear, setClear] = useState(false);
 
   useEffect(() => {
     const fetchPatient = async (id: string) => {
@@ -52,6 +55,47 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
     return null;
   };
 
+  const cancelForm = () => {
+    setShowForm(false);
+    setClear(!clear);
+  };
+
+  const notify = (message: string) => {
+    setError(message);
+    setTimeout(() => {
+      setError('');
+    }, 5000);
+  };
+
+  const addNewEntry = async (values: NewEntry) => {
+    if (id) {
+      try {
+        const entry = await patientService.createEntry(id, values);
+        setPatient({ ...patient, entries: [...patient.entries, entry] });
+        cancelForm();
+      } catch (e: unknown) {
+        if (axios.isAxiosError(e)) {
+          if (
+            e?.response?.data &&
+            typeof e?.response?.data.error === 'string'
+          ) {
+            const message = e.response.data.error.replace(
+              'Something went wrong. Error: ',
+              ''
+            );
+            console.error(message);
+            notify(message);
+          } else {
+            notify('Unrecognized axios error');
+          }
+        } else {
+          console.error('Unknown error', e);
+          notify('Unknown error');
+        }
+      }
+    }
+  };
+
   return (
     <div>
       <h2>
@@ -65,10 +109,28 @@ const PatientPage = ({ id }: { id: string | undefined }) => {
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
       <h3>entries</h3>
-      <Button variant='contained' style={{ marginBottom: '2rem' }}>
+
+      <Button
+        variant='contained'
+        style={{
+          marginBottom: '2rem',
+          display: showForm ? 'none' : 'block',
+        }}
+        onClick={() => {
+          setShowForm(true);
+        }}
+      >
         Add New Entry
       </Button>
-      <AddEntryForm diagnosisCodes={diagnoses.map((d) => d.code)} />
+      <div style={{ display: showForm ? 'block' : 'none' }}>
+        {error && <Alert severity='error'>{error}</Alert>}
+        <AddEntryForm
+          diagnosisCodes={diagnoses.map((d) => d.code)}
+          onCancel={cancelForm}
+          onSubmit={addNewEntry}
+          clear={clear}
+        />
+      </div>
       {patient.entries.map((entry: Entry) => {
         return (
           <div key={entry.id} className='entry'>
