@@ -1,4 +1,5 @@
-import { FlatList, View, StyleSheet } from 'react-native'
+import { FlatList, View, StyleSheet, Dimensions } from 'react-native'
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context'
 
 import RepositoryItem from './RepositoryItem'
 
@@ -62,16 +63,18 @@ const ItemSeparator = () => <View style={styles.separator} />
 
 const RepositoryList = () => {
   return (
-    <View style={styles.container}>
-      <FlatList
-        style={{ flex: 1 }}
-        data={repositories}
-        ItemSeparatorComponent={ItemSeparator}
-        renderItem={({ item, index, separators }) => (
-          <RepositoryItem item={item} />
-        )}
-      />
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          style={{ flex: 1 }}
+          data={repositories}
+          ItemSeparatorComponent={ItemSeparator}
+          renderItem={({ item, index, separators }) => (
+            <RepositoryItem item={item} />
+          )}
+        />
+      </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 

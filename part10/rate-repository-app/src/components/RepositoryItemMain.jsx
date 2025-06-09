@@ -6,11 +6,12 @@ const styles = StyleSheet.create({
   container: {
     gap: 8,
     alignItems: 'flex-start',
+    flex: 1,
   },
   containerRow: {
     flexDirection: 'row',
     gap: 20,
-    marginBottom: 15,
+    marginBottom: 18,
   },
   avatar: {
     width: 50,
