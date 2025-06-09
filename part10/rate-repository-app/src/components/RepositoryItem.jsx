@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native'
 
-import theme from './theme'
+import theme from '../theme'
 import RepositoryItemMain from './RepositoryItemMain'
 import RepositoryStats from './RepositoryStats'
 
