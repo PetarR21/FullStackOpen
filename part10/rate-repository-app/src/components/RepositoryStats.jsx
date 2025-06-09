@@ -18,7 +18,7 @@ const RepositoryStats = ({ item }) => {
       return (number / 1000).toFixed(1) + 'k'
     }
   }
-  console.log(formatNumber(item.stargazersCount))
+
   return (
     <View style={styles.container}>
       <View style={styles.statItem}>
