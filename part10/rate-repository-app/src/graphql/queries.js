@@ -5,6 +5,7 @@ export const GET_REPOSITORIES = gql`
     repositories {
       edges {
         node {
+          id
           fullName
           language
           ownerAvatarUrl
@@ -18,6 +19,29 @@ export const GET_REPOSITORIES = gql`
     }
   }
 `
+
+export const GET_REPOSITORY = gql`
+  query Repository($repositoryId: ID!) {
+    repository(id: $repositoryId) {
+      createdAt
+      description
+      forksCount
+      fullName
+      id
+      language
+      name
+      openIssuesCount
+      ownerAvatarUrl
+      ownerName
+      ratingAverage
+      reviewCount
+      stargazersCount
+      url
+      watchersCount
+    }
+  }
+`
+
 export const AUTHENTICATE = gql`
   mutation Authenticate($credentials: AuthenticateInput) {
     authenticate(credentials: $credentials) {

@@ -33,27 +33,7 @@ const initialValues = {
   password: '',
 }
 
-const SignIn = () => {
-  const [signIn] = useSignIn()
-  const navigate = useNavigate()
-
-  const onSubmit = async (values) => {
-    const { username, password } = values
-
-    try {
-      const { data } = await signIn({ username, password })
-      navigate('/')
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const formik = useFormik({
-    initialValues,
-    validationSchema,
-    onSubmit,
-  })
-
+export const SignInContainer = ({ formik }) => {
   return (
     <View style={styles.container}>
       <TextInput
@@ -102,6 +82,30 @@ const SignIn = () => {
       </Pressable>
     </View>
   )
+}
+
+const SignIn = () => {
+  const [signIn] = useSignIn()
+  const navigate = useNavigate()
+
+  const onSubmit = async (values) => {
+    const { username, password } = values
+
+    try {
+      const { data } = await signIn({ username, password })
+      navigate('/')
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema,
+    onSubmit,
+  })
+
+  return <SignInContainer formik={formik} />
 }
 
 export default SignIn

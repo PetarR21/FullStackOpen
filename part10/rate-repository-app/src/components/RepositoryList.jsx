@@ -1,8 +1,9 @@
 import useRepositories from '../hooks/useRepositories'
-import { FlatList, View, StyleSheet, Dimensions } from 'react-native'
+import { FlatList, View, StyleSheet, Dimensions, Pressable } from 'react-native'
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context'
 
 import RepositoryItem from './RepositoryItem'
+import { useNavigate } from 'react-router-native'
 
 const styles = StyleSheet.create({
   separator: {
@@ -15,10 +16,7 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />
 
-const RepositoryList = () => {
-  const { repositories } = useRepositories()
-
-  // Get the nodes from the edges array
+export const RepositoryListContainer = ({ repositories, navigateTo }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
     : []
@@ -30,12 +28,38 @@ const RepositoryList = () => {
           style={{ flex: 1 }}
           data={repositoryNodes}
           ItemSeparatorComponent={ItemSeparator}
-          renderItem={({ item, index, separators }) => (
-            <RepositoryItem item={item} />
+          keyExtractor={(item, index) =>
+            item?.id ? String(item.id) : String(index)
+          }
+          renderItem={({ item }) => (
+            <Pressable
+              style={{ cursor: 'pointer' }}
+              onPress={() => {
+                navigateTo(item.id)
+              }}
+            >
+              <RepositoryItem item={item} />
+            </Pressable>
           )}
         />
       </SafeAreaView>
     </SafeAreaProvider>
+  )
+}
+
+const RepositoryList = () => {
+  const { repositories } = useRepositories()
+  const navigate = useNavigate()
+
+  const navigateTo = (id) => {
+    navigate(`/${id}`)
+  }
+
+  return (
+    <RepositoryListContainer
+      repositories={repositories}
+      navigateTo={navigateTo}
+    />
   )
 }
 
