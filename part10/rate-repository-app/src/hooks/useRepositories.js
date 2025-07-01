@@ -1,11 +1,11 @@
 import { GET_REPOSITORIES } from '../graphql/queries'
 import { useQuery } from '@apollo/client'
 
-const useRepositories = (selectedValue) => {
+const useRepositories = (selectedValue, searchQuery) => {
   // eslint-disable-next-line no-unused-vars
-  console.log(selectedValue)
 
   let variables = {}
+
   if (selectedValue === 'latest') {
     variables = { orderBy: 'CREATED_AT', orderDirection: 'DESC' }
   } else if (selectedValue === 'highest') {
@@ -14,7 +14,14 @@ const useRepositories = (selectedValue) => {
     variables = { orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' }
   }
 
-  const { data, loading } = useQuery(GET_REPOSITORIES, {
+  if (searchQuery) {
+    variables = {
+      ...variables,
+      searchKeyword: searchQuery,
+    }
+  }
+
+  const { data } = useQuery(GET_REPOSITORIES, {
     fetchPolicy: 'cache-and-network',
     variables: variables,
   })

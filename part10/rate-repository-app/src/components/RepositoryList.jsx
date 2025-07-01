@@ -6,6 +6,8 @@ import RepositoryItem from './RepositoryItem'
 import { useNavigate } from 'react-router-native'
 import { useState, useRef } from 'react'
 import theme from '../theme'
+import SearchbarComponent from './SearchbarComponent'
+import { useDebounce } from 'use-debounce'
 
 const styles = StyleSheet.create({
   separator: {
@@ -23,6 +25,8 @@ export const RepositoryListContainer = ({
   navigateTo,
   selectedValue,
   setSelectedValue,
+  searchQuery,
+  setSearchQuery,
 }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -59,24 +63,33 @@ export const RepositoryListContainer = ({
             </Pressable>
           )}
           ListHeaderComponent={
-            <Picker
-              style={{ color: theme.colors.textPrimary }}
-              ref={pickerRef}
-              selectedValue={selectedValue}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedValue(itemValue)
-              }
-            >
-              <Picker.Item
-                label='Select an item...'
-                value=''
-                enabled={false}
-                style={{ color: theme.colors.textSecondary }}
+            <>
+              <SearchbarComponent
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
               />
-              <Picker.Item label='Latest repositories' value='latest' />
-              <Picker.Item label='Highest rated repositories' value='highest' />
-              <Picker.Item label='Lowest rated repositories' value='lowest' />
-            </Picker>
+              <Picker
+                style={{ color: theme.colors.textPrimary }}
+                ref={pickerRef}
+                selectedValue={selectedValue}
+                onValueChange={(itemValue, itemIndex) =>
+                  setSelectedValue(itemValue)
+                }
+              >
+                <Picker.Item
+                  label='Select an item...'
+                  value=''
+                  enabled={false}
+                  style={{ color: theme.colors.textSecondary }}
+                />
+                <Picker.Item label='Latest repositories' value='latest' />
+                <Picker.Item
+                  label='Highest rated repositories'
+                  value='highest'
+                />
+                <Picker.Item label='Lowest rated repositories' value='lowest' />
+              </Picker>
+            </>
           }
         />
       </SafeAreaView>
@@ -86,7 +99,9 @@ export const RepositoryListContainer = ({
 
 const RepositoryList = () => {
   const [selectedValue, setSelectedValue] = useState('')
-  const { repositories } = useRepositories(selectedValue)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 500)
+  const { repositories } = useRepositories(selectedValue, debouncedSearchQuery)
 
   const navigate = useNavigate()
 
@@ -100,6 +115,8 @@ const RepositoryList = () => {
       navigateTo={navigateTo}
       selectedValue={selectedValue}
       setSelectedValue={setSelectedValue}
+      searchQuery={searchQuery}
+      setSearchQuery={setSearchQuery}
     />
   )
 }
