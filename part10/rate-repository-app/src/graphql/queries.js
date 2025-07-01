@@ -56,18 +56,6 @@ export const GET_REPOSITORY = gql`
   }
 `
 
-export const AUTHENTICATE = gql`
-  mutation Authenticate($credentials: AuthenticateInput) {
-    authenticate(credentials: $credentials) {
-      accessToken
-      expiresAt
-      user {
-        username
-      }
-    }
-  }
-`
-
 export const ME = gql`
   query Me {
     me {

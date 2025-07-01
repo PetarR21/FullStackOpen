@@ -21,11 +21,14 @@ const AppBar = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.flex} horizontal>
+      <ScrollView horizontal>
         <AppBarTab text={'Repositories'} to='/' />
 
         {data && data.me ? (
-          <AppBarTab text={'Sign Out'} to='/signin' />
+          <>
+            <AppBarTab text={'Sign Out'} to='/signin' />
+            <AppBarTab text={'Create a review'} to='/createReview' />
+          </>
         ) : (
           <AppBarTab text={'Sing In'} to='/signin' />
         )}

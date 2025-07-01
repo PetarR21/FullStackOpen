@@ -8,8 +8,8 @@ const useRepository = (id) => {
 
   // eslint-disable-next-line no-unused-vars
   const { data, loading } = useQuery(GET_REPOSITORY, {
-    variables: { repositoryId: id },
     fetchPolicy: 'cache-and-network',
+    variables: { repositoryId: id },
   })
 
   return { repository: data ? data.repository : undefined }

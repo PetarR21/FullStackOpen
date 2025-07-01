@@ -6,7 +6,8 @@ import { useApolloClient } from '@apollo/client'
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    paddingBlock: 30,
+    paddingInline: 15,
   },
 })
 
