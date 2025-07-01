@@ -2,8 +2,6 @@ import { GET_REPOSITORIES } from '../graphql/queries'
 import { useQuery } from '@apollo/client'
 
 const useRepositories = (selectedValue, searchQuery) => {
-  // eslint-disable-next-line no-unused-vars
-
   let variables = {}
 
   if (selectedValue === 'latest') {

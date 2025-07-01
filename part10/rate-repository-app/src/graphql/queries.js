@@ -67,8 +67,24 @@ export const GET_REPOSITORY = gql`
 export const ME = gql`
   query Me {
     me {
-      id
-      username
+      reviews {
+        edges {
+          node {
+            id
+            text
+            rating
+            createdAt
+            user {
+              id
+              username
+            }
+            repository {
+              id
+              fullName
+            }
+          }
+        }
+      }
     }
   }
 `
