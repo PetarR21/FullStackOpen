@@ -173,7 +173,11 @@ export const ReviewItem = ({ review, isInMyReviews, refetch }) => {
 
 const RepositoryItem = ({ item }) => {
   const { id } = useParams()
-  const { repository } = useRepository(id)
+  const { repository, fetchMore } = useRepository(id, 2)
+
+  const onEndReach = () => {
+    fetchMore()
+  }
 
   if (!item) {
     if (!repository) {
@@ -189,6 +193,8 @@ const RepositoryItem = ({ item }) => {
         keyExtractor={({ id }) => id}
         ListHeaderComponent={() => <RepositoryInfo repository={repository} />}
         ItemSeparatorComponent={ItemSeparator}
+        onEndReached={onEndReach}
+        onEndReachedThreshold={0.5}
       />
     )
   } else {

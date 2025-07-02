@@ -27,6 +27,7 @@ export const RepositoryListContainer = ({
   setSelectedValue,
   searchQuery,
   setSearchQuery,
+  onEndReach,
 }) => {
   const repositoryNodes = repositories
     ? repositories.edges.map((edge) => edge.node)
@@ -91,6 +92,8 @@ export const RepositoryListContainer = ({
               </Picker>
             </>
           }
+          onEndReached={onEndReach}
+          onEndReachedThreshold={0.5}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -101,12 +104,20 @@ const RepositoryList = () => {
   const [selectedValue, setSelectedValue] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery] = useDebounce(searchQuery, 500)
-  const { repositories } = useRepositories(selectedValue, debouncedSearchQuery)
+  const { repositories, fetchMore } = useRepositories(
+    selectedValue,
+    debouncedSearchQuery,
+    4
+  )
 
   const navigate = useNavigate()
 
   const navigateTo = (id) => {
     navigate(`/${id}`)
+  }
+
+  const onEndReach = () => {
+    fetchMore()
   }
 
   return (
@@ -117,6 +128,7 @@ const RepositoryList = () => {
       setSelectedValue={setSelectedValue}
       searchQuery={searchQuery}
       setSearchQuery={setSearchQuery}
+      onEndReach={onEndReach}
     />
   )
 }
