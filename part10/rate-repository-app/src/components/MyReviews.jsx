@@ -3,7 +3,7 @@ import useME from '../hooks/useMe'
 import { ReviewItem, ItemSeparator } from './RepositoryItem'
 
 const MyReviews = () => {
-  const { me } = useME()
+  const { me, refetch } = useME()
 
   if (!me) {
     return null
@@ -15,7 +15,7 @@ const MyReviews = () => {
     <FlatList
       data={reviews}
       renderItem={({ item }) => (
-        <ReviewItem review={item} isInMyReviews={true} />
+        <ReviewItem review={item} isInMyReviews={true} refetch={refetch} />
       )}
       keyExtractor={({ id }) => id}
       ItemSeparatorComponent={ItemSeparator}

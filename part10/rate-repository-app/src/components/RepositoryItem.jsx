@@ -96,7 +96,7 @@ const RepositoryInfo = ({ repository }) => {
   )
 }
 
-export const ReviewItem = ({ review, isInMyReviews }) => {
+export const ReviewItem = ({ review, isInMyReviews, refetch }) => {
   const navigate = useNavigate()
   const [deleteForReview] = useDeleteReview()
 
@@ -118,7 +118,7 @@ export const ReviewItem = ({ review, isInMyReviews }) => {
           onPress: async () => {
             try {
               await deleteForReview(review.id)
-              navigate(`/${review.repository.id}`)
+              refetch()
             } catch (error) {
               console.log(error)
             }

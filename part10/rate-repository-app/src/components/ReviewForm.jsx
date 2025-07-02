@@ -142,9 +142,7 @@ const ReviewForm = () => {
         repositoryName: values.name,
         text: values.review,
       })
-      console.log('Success')
       navigate(`/${res.data.createReview.repositoryId}`)
-      console.log('Another success')
     } catch (error) {
       console.log(error)
     }
