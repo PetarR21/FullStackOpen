@@ -57,13 +57,9 @@ singleRouter.get('/', async (req, res) => {
 
 /* PUT todo. */
 singleRouter.put('/', async (req, res) => {
-  if (!req.body.text) {
-    return res.status(400).json({ error: 'Text is required' })
-  }
-
   todo = await Todo.findByIdAndUpdate(
     req.todo._id,
-    { text: req.body.text },
+    { done: !req.todo.done },
     { new: true }
   )
 
