@@ -15,10 +15,12 @@ services:
     restart: always
     ports:
       - 6379:6379
-    command: redis-server --save 20 1 --loglevel warning
+    command: ['redis-server', '--appendonly', 'yes']
     environment:
       - REDIS_HOST=localhost
       - REDIS_PORT=6379
+    volumes: # Declare the volume
+      - ./redis_data:/data
 
 volumes:
   mongo_data:
