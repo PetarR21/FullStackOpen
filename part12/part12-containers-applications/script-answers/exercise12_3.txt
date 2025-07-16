@@ -1,3 +1,2 @@
-apt-get update
-apt-get -y install nano
+docker start -i blissful_bose
 nano /usr/src/app/index.js
