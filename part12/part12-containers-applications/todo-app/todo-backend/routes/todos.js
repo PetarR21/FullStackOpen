@@ -2,11 +2,10 @@ const express = require('express')
 const { Todo } = require('../mongo')
 const router = express.Router()
 const { getAsync, setAsync } = require('../redis/index.js')
-const { set } = require('mongoose')
 
 router.get('/statistics', async (_, res) => {
   const addedTodos = await getAsync('added_todos')
-
+  res.send(200)
   if (!addedTodos) {
     setAsync('added_todos', '0')
     return res.send({ addedTodos: '0' })
@@ -18,7 +17,7 @@ router.get('/statistics', async (_, res) => {
 /* GET todos listing. */
 router.get('/', async (_, res) => {
   const todos = await Todo.find({})
-  res.send(todos)
+  res.json(todos)
 })
 
 /* POST todo to listing. */
