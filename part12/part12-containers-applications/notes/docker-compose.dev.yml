@@ -1,0 +1,31 @@
+services:
+  app:
+    image: notes-frontend-dev
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./frontend/:/usr/src/app
+    environment:
+      - VITE_BACKEND_URL=http://localhost:3000
+    container_name: notes-frontend-dev
+  server:
+    image: notes-backend-dev
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend/:/usr/src/app
+    container_name: notes-backend-dev
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy-notes
+    depends_on:
+      - app
+      - server

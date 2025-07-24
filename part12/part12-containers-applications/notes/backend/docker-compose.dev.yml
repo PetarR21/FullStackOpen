@@ -1,0 +1,11 @@
+services:
+  server:
+    image: notes-backend-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    ports:
+      - 3000:3000
+    volumes:
+      - ./:/usr/src/app
+    container_name: notes-backend-dev
